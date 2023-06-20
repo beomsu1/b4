@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +7,18 @@
 </head>
 <body>
   <h1>Product Register Page</h1>
+
+  <form class="actionForm" action="/product/register" method="post">
+    <div>
+      <input type="text" name="pname" value="상품1">
+    </div>
+    <div>
+      <input type="number" name="price" value="12000">
+    </div>
+    <div>
+      <button class="saveBtn">Register</button>
+    </div>
+  </form>
 
   <input class="uploadInput" type="file" name="upload" multiple >
   <button class="uploadBtn">UPLOAD</button>
@@ -36,9 +47,47 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
 
-    const uploadBtn = document.querySelector(".uploadBtn")
+    const uploadBtn = document.querySelector(".uploadBtn") 
     const uploadInput = document.querySelector(".uploadInput")
     const uploadUL = document.querySelector(".uploadUL")
+
+    const saveBtn = document.querySelector(".saveBtn")
+
+    const actionForm = document.querySelector(".actionForm")
+
+    saveBtn.addEventListener("click", e => {
+
+      e.preventDefault()
+      e.stopPropagation()
+
+      // 배열로 생성
+      const liArr = uploadUL.querySelectorAll("li")
+
+      console.log("----------------1")
+      console.log(liArr)
+
+      // 첨부파일이 있는지 없는지 확인
+      if(!liArr || liArr.length === 0){
+        alert("파일을 넣어주세요.")
+        return
+      }
+
+      let str =''
+
+      for(let liObj of liArr){
+        console.log(liObj)
+        const uuid = liObj.getAttribute("data-uuid")
+        const fileName = liObj.getAttribute("data-fileName")
+        console.log(uuid , fileName)
+        console.log("--------------------------------")
+        str += `<input type='hidden' name='fileNames' value='${uuid}_${fileName}'>`
+      }
+
+      actionForm.innerHTML += str
+
+
+
+    }, false)
 
     uploadBtn.addEventListener("click", e => {
       e.preventDefault()
@@ -78,7 +127,7 @@
         const {fileName,link,uuid} = uploadFile
 
         str += `
-        <li>
+        <li data-uuid='${uuid}' data-fileName='${fileName}'>
           <div>
             <a href='http://localhost/${uuid}_${fileName}' target="_blank">
             <img src='http://localhost/${link}'/>

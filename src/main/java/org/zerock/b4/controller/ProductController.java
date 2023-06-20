@@ -20,14 +20,13 @@ public class ProductController {
     log.info("get product register");
   }
 
-  @PostMapping("/register")
+  @PostMapping("register")
   public String registerPost(ProductRegisterDTO registerDTO){
 
-    log.info("------------------------");
+    log.info("--------------------");
     log.info(registerDTO);
-
     return "redirect:/product/list";
   }
-
+  
   
 }
