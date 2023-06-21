@@ -15,10 +15,10 @@ import lombok.ToString;
 public class PageResponseDTO<E> {
 
     private List<E> list;
-    private int total; 
+    private long total; 
 
     @Builder(builderMethodName =  "withAll")
-    public PageResponseDTO(List<E> list, int total) {
+    public PageResponseDTO(List<E> list, long total) {
         this.list = list;
         this.total = total;
     }

@@ -1,52 +1,32 @@
-package org.zerock.b4.mappers;
+package org.zerock.b4.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 import org.zerock.b4.dto.PageRequestDTO;
+import org.zerock.b4.dto.PageResponseDTO;
 import org.zerock.b4.dto.ProductListDTO;
 import org.zerock.b4.dto.ProductRegisterDTO;
+import org.zerock.b4.mappers.ProductMapper;
 
+import groovyjarjarantlr4.v4.codegen.model.chunk.RetValueRef;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@SpringBootTest
 @Log4j2
-public class ProductMapperTests {
-  
-  @Autowired(required = false)
-  ProductMapper productMapper;
+@Service
+@RequiredArgsConstructor
+public class ProductServiceImpl implements ProductService{
 
-  @Test
-  public void testGetList() {
+    // 의존성 주입
+    private final ProductMapper productMapper;
 
-    PageRequestDTO pageRequestDTO = PageRequestDTO.builder().build();
-
-    List<ProductListDTO> result = productMapper.getList(pageRequestDTO);
-
-    log.info("----------------");
-
-    log.info(result);
-
-  }
-  
-  @Transactional
-  @Test
-  @Commit
-  public void testRegister(){
-
-    ProductRegisterDTO dto = new ProductRegisterDTO();
-    dto.setPname("테스트상품");
-    dto.setPrice(5000);
-    dto.setStatus(true);
-    dto.setFileNames(List.of(UUID.randomUUID()+"_f1.jpg",UUID.randomUUID()+"_f2.jpg"));
+    @Override
+    public Integer register(ProductRegisterDTO dto){
 
     List<String> fileNames = dto.getFileNames();
 
@@ -54,14 +34,14 @@ public class ProductMapperTests {
 
     log.info("insert product count: " + count);
 
-    Integer pno = dto.getPno();
+    int pno = dto.getPno();
 
     log.info("-----------------------------" + pno);
 
     AtomicInteger index = new AtomicInteger();
 
     List<Map<String,String>> list = fileNames.stream().map(str -> {
-      String uuid = str.substring(0, 6);
+      String uuid = str.substring(0, 36);
       String fileName = str.substring(37);
 
       return Map.of("uuid", uuid, "fileName", fileName,"pno", ""+pno, "ord", "" + index.getAndIncrement());
@@ -73,8 +53,27 @@ public class ProductMapperTests {
     int countImages = productMapper.insertImages(list);
 
     log.info("=====================" + countImages);
+
+        return pno;
+
+
+    }
+
+
+    @Override
+    public PageResponseDTO<ProductListDTO> list(PageRequestDTO pageRequestDTO){
+
+        List<ProductListDTO> result= productMapper.getList(pageRequestDTO);
+
+        Long total = 123L;
+
+         return PageResponseDTO.<ProductListDTO>withAll()
+         .list(result)
+         .total(total)
+         .build();
+    }
+
     
 
-  }
 
 }

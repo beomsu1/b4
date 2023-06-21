@@ -85,6 +85,8 @@
 
       actionForm.innerHTML += str
 
+      actionForm.submit()
+
 
 
     }, false)
@@ -156,12 +158,12 @@
 
       liObj.remove()
 
-      window.addEventListener("beforeunload" , e =>{
+      // window.addEventListener("beforeunload" , e =>{
 
-        e.preventDefault()
+      //   e.preventDefault()
 
-        alert("AAA")
-      } , false)
+      //   alert("AAA")
+      // } , false)
 
     }
 
