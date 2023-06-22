@@ -2,25 +2,22 @@ package org.zerock.b4.dto;
 
 import java.util.List;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-// GenericType 
-@Getter
-@Setter
-@ToString
+@Data
+
 public class PageResponseDTO<E> {
+  
+  private List<E> list;
 
-    private List<E> list;
-    private long total; 
+  private long total;
 
-    @Builder(builderMethodName =  "withAll")
-    public PageResponseDTO(List<E> list, long total) {
-        this.list = list;
-        this.total = total;
-    }
-    
+  @Builder(builderMethodName =  "withAll")
+  public PageResponseDTO(List<E> list, long total ){
+    this.list = list;
+    this.total = total;
+  }
+
 }

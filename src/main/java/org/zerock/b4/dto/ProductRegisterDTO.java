@@ -4,6 +4,8 @@ import java.util.List;
 
 import lombok.Data;
 
+// 상품등록 DTO
+
 @Data
 public class ProductRegisterDTO {
     
@@ -12,5 +14,7 @@ public class ProductRegisterDTO {
     private int price;
     private boolean status;
 
+    // 쉬운 방법
     private List<String> fileNames;
+    
 }

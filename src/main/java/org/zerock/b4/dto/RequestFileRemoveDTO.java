@@ -4,18 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-// response 데이터
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductListDTO {
+public class RequestFileRemoveDTO {
 
-    private Integer pno;
-    private String pname;
-    private int price;
-    private boolean status;
     private String fileName;
-
+    
 }

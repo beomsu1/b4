@@ -2,7 +2,6 @@ package org.zerock.b4.mappers;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -20,61 +19,59 @@ import lombok.extern.log4j.Log4j2;
 @SpringBootTest
 @Log4j2
 public class ProductMapperTests {
-  
-  @Autowired(required = false)
-  ProductMapper productMapper;
 
-  @Test
-  public void testGetList() {
+    @Autowired(required = false)
+    ProductMapper productMapper;
 
-    PageRequestDTO pageRequestDTO = PageRequestDTO.builder().build();
+    @Test
+    public void testGetList() {
 
-    List<ProductListDTO> result = productMapper.getList(pageRequestDTO);
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder().build();
 
-    log.info("----------------");
+        List<ProductListDTO> result = productMapper.getList(pageRequestDTO);
 
-    log.info(result);
+        log.info(result);
 
-  }
-  
-  @Transactional
-  @Test
-  @Commit
-  public void testRegister(){
+    }
 
-    ProductRegisterDTO dto = new ProductRegisterDTO();
-    dto.setPname("테스트상품");
-    dto.setPrice(5000);
-    dto.setStatus(true);
-    dto.setFileNames(List.of(UUID.randomUUID()+"_f1.jpg",UUID.randomUUID()+"_f2.jpg"));
+    // Test는 기본 RollBack이기 때문에 Commit
+    @Transactional
+    @Test
+    @Commit
+    public void testRegister() {
 
-    List<String> fileNames = dto.getFileNames();
+        ProductRegisterDTO dto = new ProductRegisterDTO();
+        dto.setPname("테스트상품");
+        dto.setPrice(5000);
+        dto.setStatus(true);
+        dto.setFileNames(List.of("aaaaa_f1.jpg", "bbbbb_f2.jpg"));
 
-    int count = productMapper.insertProduct(dto);
+        List<String> fileNames = dto.getFileNames();
 
-    log.info("insert product count: " + count);
+        int count = productMapper.insertProduct(dto);
 
-    Integer pno = dto.getPno();
+        log.info("insert product count: " + count);
 
-    log.info("-----------------------------" + pno);
+        Integer pno = dto.getPno();
 
-    AtomicInteger index = new AtomicInteger();
+        log.info("-----------------------------" + pno);
 
-    List<Map<String,String>> list = fileNames.stream().map(str -> {
-      String uuid = str.substring(0, 6);
-      String fileName = str.substring(37);
+        AtomicInteger index = new AtomicInteger();
 
-      return Map.of("uuid", uuid, "fileName", fileName,"pno", ""+pno, "ord", "" + index.getAndIncrement());
+        List<Map<String, String>> list = fileNames.stream().map(str -> {
+            String uuid = str.substring(0, 5);
+            String fileName = str.substring(6);
 
-    }).collect(Collectors.toList());
+            return Map.of("uuid", uuid, "fileName", fileName, "pno", "" + pno, "ord", "" + index.getAndIncrement());
 
-    log.info(list);
+        }).collect(Collectors.toList());
 
-    int countImages = productMapper.insertImages(list);
+        log.info(list);
 
-    log.info("=====================" + countImages);
-    
+        int countImages = productMapper.insertImages(list);
 
-  }
+        log.info("=====================" + countImages);
+
+    }
 
 }
